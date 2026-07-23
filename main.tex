@@ -1,0 +1,494 @@
+\documentclass[12pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{amsmath}
+\usepackage{url}
+
+\newcommand{\safeincludegraphics}[2][]{%
+\IfFileExists{#2}{\includegraphics[#1]{#2}}{\fbox{\parbox{0.85\textwidth}{\centering Imagen no encontrada: \texttt{#2}}}}%
+}
+
+\begin{document}
+
+
+%PORTADA:
+
+\begin{titlepage}
+
+\centering
+
+{\Large Instituto Politécnico Nacional\par}
+
+\vspace{1cm}
+
+{\large Escuela Superior de Ingeniería Mecánica y Eléctrica - Unidad Zacatenco}
+
+\vspace{3cm}
+
+{\Huge \textbf{Simulación de un Sistema de Corrección Automática de Tono (Auto-Tune) en MATLAB} \par}
+
+\vspace{3cm}
+
+{\Large Comunicaciones Digitales \par}
+
+\vfil
+
+{\large
+Alumno: Sánchez Rodríguez, Erik \par 
+}
+
+\vspace{0.5cm}
+
+{\large
+Profesor: Pérez Macías, César Israel \par 
+}
+
+\vspace{1cm}
+
+{\large
+Junio 2026
+\par} 
+
+\end{titlepage}
+
+
+%ÍNDICE:
+
+\tableofcontents
+\newpage
+
+
+%INTRODUCCIÓN
+
+\section{Introducción}
+
+La voz es uno de los medios de comunicación más importantes entre las personas, y gracias al avance tecnológico actualmente es posible procesarla, analizarla y modificarla usando herramientas computacionales. El procesamiento digital de voz se usa en áreas como las telecomunicaciones, la producción musical, los sistemas de reconocimiento de voz y la transmisión de información.
+
+Uno de los usos más conocidos es la corrección automática de tono, la cual permite ajustar la frecuencia fundamental de una señal de voz para aproximarla a una nota musical específica. Esta técnica es ampliamente utilizada en la industria musical para corregir desafinaciones y mejorar las interpretaciones vocales.
+
+En este proyecto se propone el desarrollo de una simulación en MATLAB de un sistema de corrección automática de tono para señales de voz. El sistema considera etapas de adquisición de audio, análisis espectral, detección de la frecuencia fundamental, identificación de la nota musical correspondiente y corrección del tono de la señal de entrada.
+
+Este documento se encuentra organizado en diferentes secciones. En primer lugar, se presenta información general relacionada con las comunicaciones digitales, el procesamiento digital de voz y los fundamentos de la corrección automática de tono. Luego, se describe el sistema abstracto propuesto y la implementación en MATLAB. Finalmente, se muestran las pruebas realizadas, los resultados obtenidos y las conclusiones del desarrollo del proyecto.
+
+
+%JUSTIFICACIÓN
+
+\subsection{Justificación}
+
+Las comunicaciones digitales han desarrollado muchas aplicaciones de procesamiento y transmisión de información. Dentro de estas aplicaciones, el procesamiento digital de voz es de gran importancia, ya que trabaja con la voz humana como medio de comunicación y expresión.
+
+La corrección automática de tono constituye una aplicación que integra conceptos de análisis de señales, procesamiento digital y representación de información en sistemas computacionales. Su estudio es importante porque permite comprender cómo una señal de voz puede ser analizada y modificada mediante algoritmos que detectan y corrigen variaciones en la frecuencia fundamental.
+
+El desarrollo de una simulación de este tipo genera un buen entorno para aplicar los conocimientos adquiridos en la asignatura de Comunicaciones Digitales, relacionando conceptos teóricos con una aplicación práctica de uso real. Asimismo, permite familiarizarse con herramientas de análisis y procesamiento de señales en MATLAB, fortaleciendo las competencias necesarias para el diseño e implementación de sistemas digitales.
+
+Por lo anterior, se considera eficaz el desarrollo de este proyecto, ya que integra conocimientos de comunicaciones digitales, procesamiento digital de señales y análisis de audio en una aplicación tecnológica ampliamente utilizada en la actualidad.
+
+
+%OBJETIVOS
+
+\subsection{Objetivo General}
+
+Desarrollar una simulación en MATLAB de un sistema de corrección automática de tono para señales de voz, aplicando conceptos de comunicaciones digitales.
+
+\subsection{Objetivos Específicos}
+
+\begin{itemize}
+    \item Adquirir o cargar una señal de voz para su procesamiento.
+    \item Analizar la frecuencia fundamental de la señal de entrada.
+    \item Identificar la nota musical asociada a la frecuencia detectada.
+    \item Implementar un mecanismo de corrección automática de tono.
+    \item Comparar la señal original con la señal procesada mediante diferentes pruebas y resultados.
+\end{itemize}
+
+
+%MARCO TEÓRICO
+
+\section{Comunicaciones Digitales}
+
+Las comunicaciones digitales forman parte de una rama de la ingeniería encargada de la representación, transmisión y procesamiento de información mediante señales digitales. A diferencia de los sistemas analógicos, en los cuales la información puede tomar un número infinito de valores dentro de un intervalo de tiempo específico, los sistemas digitales utilizan conjuntos discretos de valores para representar la información.
+
+El uso de señales digitales ofrece muchas ventajas, como una mayor inmunidad al ruido, facilidad para el almacenamiento de información, compatibilidad con sistemas computacionales y la posibilidad de implementar técnicas avanzadas de procesamiento de señales. Por lo que, las comunicaciones digitales se han convertido en la base de gran parte de las tecnologías modernas relacionadas con audio, video, datos y telecomunicaciones.
+
+En el caso de las señales de voz, es necesario realizar un proceso de digitalización que permita convertir una señal analógica en una representación digital para ser almacenada, transmitida y procesada mediante herramientas computacionales.
+
+\subsection{Señales Analógicas y Digitales}
+
+Las señales usadas en los sistemas de comunicación pueden dividirse en analógicas y digitales. Las señales analógicas tienen variaciones continuas en amplitud y tiempo, mientras que las señales digitales se representan mediante valores discretos.
+
+La voz humana es una señal analógica, ya que sus características cambian continuamente, pero para ser procesada por una computadora hay que convertirla a formato digital.
+
+En este trabajo, la señal de voz será digitalizada para permitir su análisis y procesamiento en MATLAB, haciendo posible la detección y corrección automática de tono.
+
+\subsection{Digitalización de Señales}
+
+La digitalización de señales es el proceso mediante el cual una señal analógica se convierte en una representación digital. Este procedimiento permite que la información pueda ser almacenada, transmitida y procesada por sistemas computacionales.
+
+La digitalización se realiza mediante tres etapas principales: muestreo, cuantización y codificación. A través de estas etapas, una señal continua, como la voz humana, puede transformarse en una secuencia de datos digitales apta para su procesamiento.
+
+En el presente proyecto, la digitalización de la señal de voz constituye la base para realizar el análisis de frecuencia y la corrección automática de tono mediante MATLAB.
+
+
+
+\subsection{Modulación por Codificación de Pulsos (PCM)}
+
+La Modulación por Codificación de Pulsos (PCM, por sus siglas en inglés) es una técnica utilizada para convertir señales analógicas en señales digitales. Su funcionamiento se basa en la realización de tres procesos fundamentales: muestreo, cuantización y codificación.
+
+PCM es ampliamente utilizada en sistemas de comunicaciones digitales debido a que permite representar señales analógicas mediante secuencias binarias, facilitando su almacenamiento, transmisión y procesamiento \cite{pcm}.
+
+En aplicaciones de procesamiento digital de voz, PCM constituye una de las técnicas más utilizadas para obtener una representación digital de la señal de audio.
+
+
+
+\section{Procesamiento Digital de Voz}
+
+El procesamiento digital de voz comprende el conjunto de técnicas utilizadas para analizar, modificar y extraer información de señales de voz previamente digitalizadas. Estas técnicas permiten realizar tareas como compresión, reconocimiento de voz, eliminación de ruido y corrección automática de tono.
+
+
+
+\subsection{Muestreo}
+
+El muestreo es el proceso mediante el cual una señal analógica continua se convierte en una secuencia discreta de muestras. Para conservar adecuadamente la información de la señal original, la frecuencia de muestreo debe cumplir el criterio de Nyquist \cite{nyquist}.
+\begin{equation}
+f_s \geq 2f_{max}
+\end{equation}
+
+donde $f_s$ representa la frecuencia de muestreo y $f_{max}$ la máxima frecuencia presente en la señal.
+
+En aplicaciones de audio es común utilizar frecuencias de muestreo de 44.1 kHz o 48 kHz, las cuales permiten representar adecuadamente el rango audible para el ser humano.
+
+
+
+\subsection{Cuantización}
+
+La cuantización es el proceso mediante el cual los valores continuos obtenidos durante el muestreo son aproximados a un conjunto finito de niveles de amplitud. De esta manera, cada muestra de la señal queda representada por el nivel más cercano disponible.
+
+La cantidad de niveles de cuantización depende del número de bits utilizados para representar cada muestra. A medida que aumenta el número de niveles, la señal digital se aproxima mejor a la señal original.
+
+La cuantización constituye una etapa fundamental de PCM, ya que permite transformar los valores continuos de la señal en valores discretos aptos para su representación digital.
+
+
+
+\subsection{Codificación}
+
+La codificación es la etapa final del proceso PCM. Consiste en asignar una secuencia binaria a cada uno de los niveles obtenidos durante la cuantización.
+
+Mediante este proceso, las muestras de la señal quedan representadas por cadenas de bits que pueden ser almacenadas, transmitidas y procesadas por sistemas digitales.
+
+La codificación permite obtener una representación completamente digital de la señal de voz, facilitando su posterior análisis mediante herramientas computacionales como MATLAB.
+
+
+
+\subsection{Frecuencia Fundamental de la Voz}
+
+La frecuencia fundamental es la frecuencia más baja presente en una señal periódica y constituye la principal característica utilizada para determinar el tono de una voz. Esta frecuencia se genera por la vibración de las cuerdas vocales durante la producción del habla o del canto.
+
+Cada persona posee un rango de frecuencias fundamentales diferente, dependiendo de factores como edad, género y características fisiológicas. En general, las voces masculinas presentan frecuencias fundamentales menores que las voces femeninas.
+
+La identificación de la frecuencia fundamental resulta de gran importancia en aplicaciones de procesamiento digital de voz, ya que permite determinar el tono asociado a una señal vocal \cite{pitch}.
+
+
+\subsection{Notas Musicales y Frecuencia}
+
+En música, cada nota se encuentra asociada a una frecuencia específica. Por ejemplo, la nota La4 (A4) posee una frecuencia de referencia de 440 Hz, la cual es utilizada como estándar para la afinación musical.
+
+Las diferentes notas musicales pueden obtenerse aumentando o disminuyendo la frecuencia de acuerdo con una relación definida entre semitonos. Como consecuencia, existe una correspondencia directa entre la frecuencia de una señal y la nota musical percibida por el oído humano.
+
+Esta relación permite que, una vez detectada la frecuencia fundamental de una señal de voz, sea posible identificar la nota musical más cercana y determinar si la señal se encuentra afinada o desafinada.
+
+
+
+\subsection{Detección de Pitch}
+
+El pitch es la percepción auditiva asociada al tono de un sonido y se encuentra directamente relacionado con la frecuencia fundamental de una señal de voz. La detección de pitch consiste en determinar dicha frecuencia para identificar la nota musical correspondiente.
+
+Existen diversos métodos para realizar la detección de pitch. En aplicaciones de procesamiento digital de señales es común utilizar la Transformada Rápida de Fourier (FFT), ya que permite analizar el contenido espectral de una señal y determinar las frecuencias presentes en ella \cite{fft}.
+
+Mediante la FFT es posible obtener el espectro de frecuencias de la señal de voz e identificar el componente de frecuencia dominante asociado a la frecuencia fundamental. Esta información permite determinar la nota musical producida por el cantante y evaluar si existe una desviación respecto a la afinación deseada.
+
+En el presente proyecto, la detección de pitch se realizará mediante el análisis espectral de la señal utilizando la FFT implementada en MATLAB.
+
+
+
+\subsection{Funcionamiento General del Auto-Tune}
+
+La corrección automática de tono es una técnica de procesamiento digital de voz utilizada para ajustar la frecuencia fundamental de una señal vocal hacia una nota musical determinada o hacia la nota afinada más cercana.
+
+De manera general, el proceso inicia con la adquisición de la señal de voz. Posteriormente, se realiza la detección de la frecuencia fundamental, se identifica la nota musical correspondiente y se calcula la corrección necesaria para alcanzar la afinación deseada. Finalmente, se genera una nueva señal con el tono corregido.
+
+Esta técnica es ampliamente utilizada en la producción musical moderna para mejorar la afinación de las interpretaciones vocales y obtener resultados más consistentes.
+
+
+%SISTEMA ABSTRACTO
+
+\section{Sistema Abstracto}
+
+\begin{figure}[htbp]
+\centering
+\safeincludegraphics[width=0.9\textwidth]{sistabs.jpeg}
+\caption{Diagrama de bloques del sistema propuesto.}
+\label{fig:sistemaabstracto}
+\end{figure}
+
+La Figura \ref{fig:sistemaabstracto} muestra el funcionamiento general del sistema propuesto. Inicialmente se adquiere una señal de voz que será procesada digitalmente. Posteriormente, se realiza un análisis espectral mediante la Transformada Rápida de Fourier (FFT) para obtener la frecuencia fundamental de la señal.
+
+Una vez identificada la frecuencia dominante, se determina la nota musical asociada y se calcula la corrección necesaria para aproximar la señal a la afinación deseada. Finalmente, se genera una nueva señal con el tono corregido que constituye la salida del sistema.
+
+
+
+%IMPLEMENTACIÓN DE MATLAB
+
+\newpage
+\section{Implementación en MATLAB}
+
+La implementación del sistema se realizó utilizando MATLAB debido a las herramientas que proporciona para el procesamiento digital de señales y el análisis de audio. El programa desarrollado permite adquirir una señal de voz, analizar su contenido espectral e identificar la frecuencia fundamental asociada al tono de la señal.
+
+La metodología implementada se divide en tres etapas principales: adquisición de audio, análisis espectral mediante la Transformada Rápida de Fourier (FFT) y detección de pitch. A partir de la frecuencia obtenida, el sistema identifica la nota musical más cercana y calcula el error de afinación respecto a la frecuencia de referencia correspondiente.
+
+
+\subsection{Adquisición de Audio}
+
+La señal de entrada fue almacenada en formato WAV y posteriormente cargada en MATLAB mediante la función \texttt{audioread()}. La grabación utilizada para las pruebas presentó una frecuencia de muestreo de 48 kHz y una resolución de 16 bits por muestra.
+
+Una vez adquirida la señal, se realizó su representación en el dominio del tiempo para verificar visualmente la amplitud y duración del audio procesado.
+
+
+\subsection{Análisis Espectral mediante FFT}
+
+Con el objetivo de identificar las frecuencias presentes en la señal de voz, se aplicó la Transformada Rápida de Fourier (FFT). Esta herramienta permitió transformar la señal del dominio del tiempo al dominio de la frecuencia, obteniendo así su espectro de magnitudes.
+
+El análisis espectral permitió localizar la frecuencia dominante de la señal, la cual corresponde a la frecuencia fundamental utilizada para determinar el tono de la voz. Para facilitar la visualización, se limitó el análisis a un rango de frecuencias comprendido entre 50 Hz y 2000 Hz, donde se encuentran las componentes más relevantes de la voz humana y se evita seleccionar la componente de corriente directa como frecuencia dominante.
+
+
+\subsection{Detección de Pitch}
+
+La detección de pitch se realizó a partir de la frecuencia dominante obtenida mediante la FFT. Para ello, el programa identificó el valor de frecuencia asociado al pico de mayor magnitud dentro del espectro de la señal.
+
+Durante las pruebas realizadas, el sistema detectó una frecuencia dominante de 257.21 Hz. Posteriormente, dicha frecuencia fue comparada con una tabla de frecuencias musicales de referencia para determinar la nota más cercana.
+
+Como resultado, la frecuencia detectada fue asociada a la nota C4 (Do4), cuya frecuencia de referencia es de 261.63 Hz. El error de afinación calculado fue de 4.42 Hz respecto al valor ideal.
+
+El error de afinación puede calcularse mediante:
+
+\begin{equation}
+e=f_{\text{objetivo}}-f_{\text{detectada}}
+\end{equation}
+
+donde \(f_{\text{objetivo}}\) corresponde a la frecuencia de referencia de la nota musical y \(f_{\text{detectada}}\) representa la frecuencia obtenida mediante el análisis espectral.
+
+
+\subsection{Corrección de Tono}
+
+Una vez detectada la frecuencia dominante de la señal de voz, se calculó un factor de corrección utilizando la relación entre la frecuencia objetivo y la frecuencia detectada.
+
+\begin{equation}
+K=\frac{f_{\text{objetivo}}}{f_{\text{detectada}}}
+\end{equation}
+
+donde \(f_{\text{objetivo}}\) es la frecuencia de referencia de la nota musical y \(f_{\text{detectada}}\) corresponde a la frecuencia obtenida mediante el análisis espectral.
+
+Para la señal analizada se obtuvo un factor de corrección de aproximadamente 1.0172, indicando que la frecuencia debe incrementarse ligeramente para alcanzar la afinación deseada.
+
+
+\subsection{Implementación de la Corrección Automática}
+
+Una vez detectada la frecuencia fundamental de la señal de voz, se calculó un factor de corrección utilizando la relación entre la frecuencia objetivo y la frecuencia detectada.
+
+\begin{equation}
+K=\frac{f_{objetivo}}{f_{detectada}}
+\end{equation}
+
+Para la señal analizada se obtuvo un factor de corrección de aproximadamente 1.0172.
+
+Posteriormente, la frecuencia de reproducción de la señal fue ajustada utilizando dicho factor, generando una versión corregida de la voz con una afinación más cercana a la nota musical de referencia.
+
+Esta metodología permite simular de forma sencilla el funcionamiento básico de un sistema Autotune mediante MATLAB.
+
+
+
+\subsection{Proceso General de Autocorrección}
+
+Una vez obtenida la frecuencia objetivo, el sistema calcula un factor de corrección que permite desplazar la frecuencia fundamental detectada hacia la nota musical deseada.
+
+En una implementación completa de Auto-Tune, este factor se utiliza para modificar el tono de la señal mediante técnicas de procesamiento digital conocidas como pitch shifting. Dichas técnicas permiten alterar la frecuencia de la señal sin modificar significativamente su duración temporal.
+
+En esta simulación se calcula el factor de corrección necesario para realizar dicho ajuste, validando así el funcionamiento conceptual de un sistema de corrección automática de tono.
+
+
+\subsection{Generación de la Señal de Salida}
+
+La etapa final del sistema consiste en generar la información necesaria para realizar la corrección de tono de la señal de voz. A partir de la frecuencia detectada y la frecuencia objetivo se determina el ajuste requerido para aproximar la señal a la nota musical deseada.
+
+La salida de esta simulación representa los parámetros necesarios para corregir la señal original, permitiendo estimar el ajuste requerido para reducir el error de afinación detectado durante el análisis espectral.
+
+
+\section{Desarrollo Experimental}
+
+Para validar el funcionamiento del sistema propuesto, se realizó una serie de pruebas utilizando una señal de voz grabada en formato WAV. El archivo de audio fue procesado mediante MATLAB con el objetivo de detectar su frecuencia fundamental y determinar la nota musical correspondiente.
+
+Inicialmente, la señal fue cargada utilizando la función \texttt{audioread()}, permitiendo obtener tanto las muestras de audio como la frecuencia de muestreo asociada.
+
+Posteriormente, se realizó la representación de la señal en el dominio del tiempo para verificar visualmente la calidad de la grabación y la duración de la muestra analizada.
+
+Una vez validada la señal de entrada, se aplicó la Transformada Rápida de Fourier (FFT) para obtener su espectro de frecuencias. A partir del análisis espectral fue posible identificar la frecuencia dominante presente en la señal.
+
+Finalmente, la frecuencia detectada fue comparada con una tabla de frecuencias musicales de referencia para determinar la nota musical más cercana y calcular el error de afinación correspondiente.
+
+
+
+
+
+\begin{table}[htbp]
+\centering
+\begin{tabular}{|c|c|}
+\hline
+Parámetro & Valor \\
+\hline
+Software utilizado & MATLAB \\
+Tipo de señal & Voz humana \\
+Formato de audio & WAV \\
+Frecuencia de muestreo & 48 kHz \\
+Método de análisis & FFT \\
+Método de detección & Frecuencia dominante \\
+Salida del sistema & Nota musical detectada \\
+\hline
+\end{tabular}
+\caption{Especificaciones generales del sistema implementado.}
+\label{tab:especificaciones}
+\end{table}
+
+
+
+\subsection{Código Implementado}
+
+A continuación se muestra una parte representativa del código desarrollado en MATLAB para cargar la señal, convertirla a mono, obtener su espectro y detectar la frecuencia dominante dentro del rango de análisis definido.
+
+\begin{verbatim}
+[x, Fs] = audioread('voz.wav');
+x = mean(x, 2);
+
+N = length(x);
+X = fft(x);
+f = (0:N-1)*(Fs/N);
+magnitud = abs(X);
+
+rango = (f >= 50) & (f <= 2000);
+frecuencias_rango = f(rango);
+magnitud_rango = magnitud(rango);
+
+[~, idx] = max(magnitud_rango);
+frecuencia_detectada = frecuencias_rango(idx);
+
+fprintf('Frecuencia detectada: %.2f Hz\n', ...
+        frecuencia_detectada);
+\end{verbatim}
+
+
+
+
+\section{Pruebas y Resultados}
+
+Con el propósito de validar el funcionamiento del sistema, se utilizó una señal de voz almacenada en formato WAV con una frecuencia de muestreo de 48 kHz. La señal fue procesada mediante MATLAB para obtener su representación temporal y su espectro de frecuencias.
+
+Los resultados obtenidos permitieron identificar una frecuencia dominante de 257.21 Hz, correspondiente a la nota musical C4. Asimismo, se determinó un error de afinación de 4.42 Hz respecto a la frecuencia de referencia de dicha nota.
+
+
+
+
+
+\begin{figure}[htbp]
+\centering
+\safeincludegraphics[width=0.9\textwidth]{señal_tiempo.png}
+\caption{Señal de voz en el dominio del tiempo.}
+\label{fig:tiempo}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\safeincludegraphics[width=0.9\textwidth]{fft.png}
+\caption{Espectro de frecuencias obtenido mediante FFT.}
+\label{fig:fft}
+\end{figure}
+
+
+\begin{table}[htbp]
+\centering
+\begin{tabular}{|c|c|}
+\hline
+Parámetro & Valor \\
+\hline
+Frecuencia de muestreo & 48000 Hz \\
+Frecuencia dominante & 257.21 Hz \\
+Nota detectada & C4 \\
+Frecuencia objetivo & 261.63 Hz \\
+Error de afinación & 4.42 Hz \\
+\hline
+\end{tabular}
+\caption{Resultados obtenidos durante la detección de pitch.}
+\label{tab:resultados}
+\end{table}
+
+Los resultados obtenidos demuestran que el sistema fue capaz de identificar correctamente la frecuencia dominante presente en la señal de voz analizada. Mediante el uso de la FFT se detectó una frecuencia de 257.21 Hz, la cual fue asociada a la nota musical C4.
+
+Al comparar la frecuencia detectada con la frecuencia de referencia de la nota correspondiente (261.63 Hz), se obtuvo un error de afinación de 4.42 Hz. Este resultado indica que la señal se encontraba ligeramente por debajo de la frecuencia ideal, por lo que podría aplicarse una corrección automática de tono para aproximarla al valor de referencia.
+
+Las pruebas realizadas permiten verificar el funcionamiento de las etapas de análisis espectral, detección de pitch y cálculo del factor de corrección implementadas en MATLAB.
+
+
+\section{Trabajo Futuro}
+
+La implementación desarrollada permite realizar la detección básica de pitch mediante FFT. Como trabajo futuro podría incorporarse un algoritmo completo de corrección de tono que modifique la señal de voz en tiempo real.
+
+Asimismo, podrían emplearse técnicas más avanzadas de detección de frecuencia fundamental, como autocorrelación o cepstrum, con el fin de mejorar la precisión del sistema.
+
+Finalmente, sería posible implementar una interfaz gráfica en MATLAB que facilite la interacción del usuario con el sistema de Auto-Tune.
+
+
+\section{Conclusiones}
+
+Se desarrolló una simulación en MATLAB capaz de analizar una señal de voz y determinar su frecuencia fundamental mediante la Transformada Rápida de Fourier (FFT).
+
+El sistema permitió identificar la nota musical asociada a la frecuencia dominante detectada y calcular el error de afinación respecto a una frecuencia de referencia. Los resultados obtenidos demostraron que la metodología implementada es adecuada para realizar tareas básicas de detección de pitch en señales de voz.
+
+Aunque la simulación desarrollada no implementa un algoritmo completo de modificación de tono en tiempo real, permite comprender las etapas fundamentales utilizadas por los sistemas comerciales de corrección automática de afinación, constituyendo una base para futuros desarrollos más avanzados.
+
+Asimismo, el proyecto permitió aplicar conceptos estudiados en la asignatura de Comunicaciones Digitales, tales como digitalización de señales, PCM, análisis espectral y procesamiento digital de audio utilizando herramientas computacionales.
+
+
+\section{Referencias}
+
+\begin{thebibliography}{99}
+\sloppy
+
+\bibitem{nyquist}
+J. O. Smith,
+"Sampling and Nyquist Theory",
+Stanford University,
+Disponible en:
+\url{https://ccrma.stanford.edu}
+
+\bibitem{fft}
+MathWorks,
+"Fast Fourier Transform (FFT)",
+Disponible en:
+\url{https://www.mathworks.com/help/matlab/ref/fft.html}
+
+\bibitem{pcm}
+Encyclopaedia Britannica,
+"Pulse Code Modulation",
+Disponible en:
+\url{https://www.britannica.com}
+
+\bibitem{pitch}
+MathWorks,
+"Pitch Estimation",
+Disponible en:
+\url{https://www.mathworks.com/help/audio/ref/pitch.html}
+
+\end{thebibliography}
+
+
+
+
+\end{document}
